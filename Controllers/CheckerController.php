@@ -1,7 +1,7 @@
 <?php
 require_once './Models/CheckerModel.php';
 
-class CheckerController extends Controller
+class CheckerController
 {
     public static function create($db)
     {

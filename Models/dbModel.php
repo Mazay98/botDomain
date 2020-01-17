@@ -2,7 +2,7 @@
 
 class DB
 {
-    public $id;
+    protected $id;
 
     public function __construct ()
     {

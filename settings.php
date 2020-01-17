@@ -4,5 +4,5 @@ const DB_HOST = 'localhost';
 const DB_NAME = 'parse_date';
 const DB_USER = 'root';
 const DB_PASS ='';
-// Настройки парсинга
-const LINK_URL = 'nwbi.ru';
+// Ключ бота telegram
+const TOKEN_BOT = '705005157:AAEddFrhy7e3UH372jQEFyjsnHg3Gzo2Tag';

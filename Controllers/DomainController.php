@@ -1,19 +1,19 @@
 <?php
 require_once './library/Phois/Whois/Whois.php';
 require_once './Models/DateModel.php';
-class Domain extends Controller
+class Domain
 {
-    public static function check($db)
+    public static function check($url)
     {
-        $domain = new Whois(LINK_URL);
-        $whois_answer = $domain->info();
-        $date = new Date();
-        $date->addExpAndRegDate($whois_answer, $db);
+        $domain = new Whois($url);
+//        $whois_answer = $domain->info();
+//        $date = new Date();
+//        $date->addExpAndRegDate($whois_answer, $db);
 
         if ($domain->isAvailable()) {
-            echo "Domain is available\n";
+            return "DisA";
         } else {
-            echo "Domain is registered\n";
+            return "DisR";
         }
     }
 }

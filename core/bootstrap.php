@@ -2,15 +2,11 @@
     require './settings.php';
     require_once 'Controller.php';
     require_once 'Model.php';
-    require_once './Controllers/DomainController.php';
-    require_once './Controllers/CheckerController.php';
-    require_once './Models/dbModel.php';
+    require_once  'routes.php';
 
-
-    $db = new DB();
-
-    Domain::check($db->id);
-    CheckerController::create($db->id);
+    Route::create();
+//
+//    CheckerController::create($db->id);
 
 
 //TODO: Добавить работу с ботом telegram -> php
