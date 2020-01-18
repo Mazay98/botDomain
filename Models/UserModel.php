@@ -6,7 +6,7 @@ class User
 {
     private static $domain_id;
     private static $chat_id;
-    private static $user_id;
+    public static $user_id;
     private static $name;
     private static $db;
 
@@ -24,16 +24,16 @@ class User
     }
     private static function setChatAndDomainId()
     {
-        $chat_id = (int)self::$chat_id;
+//        $chat_id = (int)self::$chat_id;
         $domain_id = (int)self::$domain_id;
+        $user_id = (int)self::$user_id;
 
-        if (empty($chat_id) || empty($domain_id)) {
+        if (empty($user_id) || empty($domain_id)) {
             return false;
         }
 
         return true;
     }
-
     public static function create($name, $chat_id)
     {
         if (empty($chat_id) || empty($name)) {
@@ -70,7 +70,7 @@ class User
         $stmt = self::$db->prepare($sql);
         $stmt->execute([self::$chat_id]);
         $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $rows;
+        return $rows['user_id'];
     }
 
 }

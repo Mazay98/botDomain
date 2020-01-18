@@ -63,7 +63,7 @@ class Bot
 
             $this->domain = $matches[1];
             if ($this->setDomainForUser()){
-                $this->responseMessage = "Доменное имя: $this->domain привязано к вашей учетной записи.\n";
+                $this->responseMessage = "Доменное имя: $this->domain привязано к вашей учетной записи. \n";
                 return true;
             } else {
                 $this->responseMessage = "Домен доступен для покупки!";

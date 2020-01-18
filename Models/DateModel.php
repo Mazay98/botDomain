@@ -38,14 +38,14 @@ class Date
             $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp]);
             return $this->addExpAndRegDate($url,$db);
         }
-        return (int)$domain_id[0]['domain_id'];
+        return (int)$domain_id['domain_id'];
     }
     public static function getDomainId($domain, $db)
     {
         $sql= "SELECT domain_id FROM domains WHERE domain_name=?";
         $stmt = $db->prepare($sql);
         $stmt->execute([$domain]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
         return $rows;
     }
     private function formatDate($date)
