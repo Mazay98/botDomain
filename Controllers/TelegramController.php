@@ -52,9 +52,9 @@ class Bot
             return true;
         }
         if (preg_match("~/add[Dd]omain[\s]+(.+\..{2,10})$~", trim($this->messages), $matches)) {
+
             $this->domain = $matches[1];
-			
-            if ($this->bindDomainForUser()){
+            if ($this->setDomainForUser()){
                 $this->responseMessage = "Доменное имя: $this->domain привязано к вашей учетной записи.\n";
                 return true;
             } else {
@@ -62,19 +62,16 @@ class Bot
                 return false;
             }
 			
-			$this->responseMessage = $this->bindDomainForUser();
-			return true;
+//			$this->responseMessage = $this->setDomainForUser();
+//			return true;
         }
         $this->responseMessage='Нет такой команды!';
         return false;
     }
 
-    private function bindDomainForUser()
+    private function setDomainForUser()
     {
-        if (User::addDomainForeUser($this->domain) == 'DisR'){
-            return true;
-        } 
-		return false;
+		return User::setDomainForeUser($this->domain);
     }
 
     private function sendRequest($method = 'sendMessage')

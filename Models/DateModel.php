@@ -21,28 +21,33 @@ class Date
         return $matches[1];
     }
 
-    public function addExpAndRegDate($ans ,$db)
+    public function addExpAndRegDate($url, $ans, $db)
     {
-        $reg = $this->getRegistryDate($ans);
-        $exp = $this->getExpirationDate($ans);
-
-//        $cd=date('d-m-Y');
-//        $d1 = strtotime($cd);
-//        $d2 = strtotime($exp);
-//        $diff = $d2-$d1;
-//        $diff = $diff/(60*60*24);
-
-        $sql= "SELECT url FROM dates WHERE url=?";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([LINK_URL]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        if (!$rows) {
-            $insert = $db->prepare('INSERT INTO dates (url, date_start, date_end) VALUES (:url, :date_start, :date_end)');
-            $insert->execute([':url' => LINK_URL, ':date_start' => $reg, ':date_end' => $exp]);
+        // Проверка на длину строки ответа
+        if (strlen($ans)<=50) {
+            return 'Ошибка в домене';
         }
-    }
 
+        $domain_id = self::getDomainId($url, $db);
+
+        if (!$domain_id) {
+            $reg = $this->getRegistryDate($ans);
+            $exp = $this->getExpirationDate($ans);
+
+            $insert = $db->prepare('INSERT INTO domains (domain_name, date_start, date_end) VALUES (:domain_name, :date_start, :date_end)');
+            $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp]);
+            return $this->addExpAndRegDate($url,$db);
+        }
+        return (int)$domain_id[0]['domain_id'];
+    }
+    public static function getDomainId($domain, $db)
+    {
+        $sql= "SELECT domain_id FROM domains WHERE domain_name=?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$domain]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $rows;
+    }
     private function formatDate($date)
     {
         preg_match("/(\d{4}-\d{2}-\d{2})/", $date, $matches);

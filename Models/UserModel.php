@@ -3,8 +3,13 @@ require_once './Controllers/DomainController.php';
 
 class User
 {
-    public static function addDomainForeUser ($url)
+    private static  $domain_id;
+    public static function setDomainForeUser ($url)
     {
-        return Domain::check($url);
+        if (is_int(Domain::getId($url))) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

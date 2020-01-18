@@ -1,0 +1,18 @@
+CREATE TABLE domains(
+	domain_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	domain_name VARCHAR(64) NOT NULL,
+	date_start VARCHAR(64) NOT NULL,
+	date_end VARCHAR(64) NOT NULL
+);
+CREATE TABLE users(
+	user_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	user_name VARCHAR(64),
+	chat_id INTEGER NOT NULL UNIQUE
+);
+CREATE TABLE domain_users(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	user_id INTEGER NOT NULL,
+	domain_id INTEGER NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(user_id),
+	FOREIGN KEY (domain_id) REFERENCES domains(domain_id)
+);
