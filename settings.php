@@ -1,7 +1,7 @@
 <?php
 // Настройки подключения к базе данных.
 const DB_HOST = 'localhost';
-const DB_NAME = 'parse_date';
+const DB_NAME = 'domains';
 const DB_USER = 'root';
 const DB_PASS ='';
 // Ключ бота telegram
