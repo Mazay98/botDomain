@@ -71,7 +71,7 @@ class Bot
 
     private function setDomainForUser()
     {
-		return User::setDomainForeUser($this->domain);
+		return User::setDomainForeUser($this->domain, $this->chatid);
     }
 
     private function sendRequest($method = 'sendMessage')
