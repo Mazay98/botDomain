@@ -23,6 +23,14 @@ class Bot
             $this->username = $response['callback_query']['message']['chat']['username'];
             $this->messages = $response['callback_query']['data'];
         }
+        $user = User::create($this->username, $this->chatid);
+
+        if (!$user) {
+            $this->options['text'] = 'Ошибка создания пользователя';
+            $this->sendRequest();
+            die();
+        }
+
         $this->setAnswer();
         $this->options['chat_id'] = $this->chatid;
         $this->options['text'] = $this->responseMessage;
@@ -71,7 +79,7 @@ class Bot
 
     private function setDomainForUser()
     {
-		return User::setDomainForeUser($this->domain, $this->chatid);
+		return User::setDomainForeUser($this->domain);
     }
 
     private function sendRequest($method = 'sendMessage')
