@@ -31,7 +31,9 @@ class User
         if (empty($user_id) || empty($domain_id)) {
             return false;
         }
-
+        if (empty(self::getDomainUser())){
+            self::setDomainUser();
+        }
         return true;
     }
     public static function create($name, $chat_id)
@@ -63,8 +65,27 @@ class User
 
         return self::userCreated();
     }
+    private static function getDomainUser()
+    {
+        $sql= "SELECT id FROM domain_users WHERE user_id=? AND domain_id=?";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute([self::$user_id,self::$domain_id]);
+        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $rows['id'];
+    }
+    private static function setDomainUser()
+    {
+        if (!empty(self::getDomainUser())){
+            return true;
+        }
 
-    private function getUserId()
+        $sql = 'INSERT INTO domain_users (user_id, domain_id) VALUES (:user_id, :domain_id)';
+        $insert = self::$db->prepare($sql);
+        $insert->execute([':user_id' => self::$user_id, ':domain_id' => self::$domain_id]);
+
+        return self::setDomainUser();
+    }
+    private static function getUserId()
     {
         $sql= "SELECT user_id FROM users WHERE chat_id=?";
         $stmt = self::$db->prepare($sql);
