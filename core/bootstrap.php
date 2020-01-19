@@ -4,6 +4,7 @@
     require_once 'Model.php';
     require_once  'routes.php';
 
+    //Инициализация маршрутов
     Route::create();
 //
 //    CheckerController::create($db->id);

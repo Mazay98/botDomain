@@ -1,6 +1,16 @@
 <?php
+/**
+ * Класс инициализации маршрутов
+ */
 class Route
 {
+    /**
+     * Метод для обработки входящих маршрутов
+     *
+     * Доступно 2 вида путей
+     * .../bot - инициализация бота telegram
+     * .../check - инициализация проверки доменов
+    */
     public static function create()
     {
         $routes = explode('/', $_SERVER['REQUEST_URI']);
@@ -15,6 +25,10 @@ class Route
         }
     }
 
+    /**
+     * Метод для обработки маршрутов которые не заданы в create
+     * @redirect /404
+    */
     function ErrorPage404()
     {
         $host = 'http://'.$_SERVER['HTTP_HOST'].'/';

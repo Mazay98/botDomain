@@ -2,31 +2,47 @@
 require_once './Controllers/DomainController.php';
 require_once './Models/dbModel.php';
 
+/**
+ * Класс для работы с пользователями
+*/
 class User
 {
+    /**
+     * @param string $domain_id Хранит id Домена
+     * @param integer $chat_id Хранит id Чата клиента
+     * @param integer $user_id Хранит id клиента
+     * @param string $name Хранит имя клиента
+     * @param string $db Хранит экземпляр БД
+     */
     private static $domain_id;
     private static $chat_id;
     public static $user_id;
     private static $name;
     private static $db;
 
-    public static function setDomainForeUser ($url)
+    /**
+     * Связать домен и пользователя
+     * @param integer $domainId id Домена
+     * @param integer $userId id Пользователя
+     * @return boolean
+    */
+    public static function setDomainForeUser ($domainId, $userId)
     {
-        if (is_int(Domain::getId($url))) {
+        self::$domain_id = $domainId;
+        self::$user_id = $userId;
 
-            self::$domain_id = Domain::getId($url);
-            self::setChatAndDomainId();
+        self::setChatAndDomainId();
 
-        } else {
-            return false;
-        }
         return true;
     }
+
+    /**
+     * Связать пользователя и домен
+    */
     private static function setChatAndDomainId()
     {
-//        $chat_id = (int)self::$chat_id;
-        $domain_id = (int)self::$domain_id;
-        $user_id = (int)self::$user_id;
+        $domain_id = self::$domain_id;
+        $user_id = self::$user_id;
 
         if (empty($user_id) || empty($domain_id)) {
             return false;
@@ -36,35 +52,61 @@ class User
         }
         return true;
     }
-    public static function create($name, $chat_id)
+
+    /**
+     * Возвращает id пользователя
+     * @param string $name Логин клиента
+     * @param string $chatId Id чата клиента
+     * @return integer
+     */
+    public static function getId($name, $chatId)
     {
-        if (empty($chat_id) || empty($name)) {
+        if (empty($chatId) || empty($name)) {
             return false;
         }
+
         $db = new DB();
         self::$db = $db->id;
         self::$name = $name;
-        self::$chat_id = $chat_id;
+        self::$chat_id = $chatId;
 
-        if (!self::userCreated()){
-            return false;
+        if (!self::getUser()) {
+            self::userCreate();
         }
-        self::$user_id = self::getUserId();
-        return true;
+
+        $user_id = (int)self::getUserId();
+        return $user_id;
     }
 
-    private function userCreated()
+    /**
+     * Создать пользователь
+     * @return boolean
+    */
+    private function userCreate()
     {
-        if (!empty(self::getUserId())){
-            return true;
-        }
-
         $sql = 'INSERT INTO users (user_name, chat_id) VALUES (:user_name, :chat_id)';
         $insert = self::$db->prepare($sql);
         $insert->execute([':user_name' => self::$name, ':chat_id' => self::$chat_id]);
-
-        return self::userCreated();
+        return true;
     }
+
+    /**
+     * Найти пользователя и получить его id
+     * @return integer
+    */
+    private static function getUser()
+    {
+        $sql= "SELECT user_id FROM users WHERE chat_id=?";
+        $stmt = self::$db->prepare($sql);
+        $stmt->execute([self::$chat_id]);
+        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)$rows['user_id'];
+    }
+
+    /**
+     * Найти домен привязанный к пользователю
+     * @return array
+    */
     private static function getDomainUser()
     {
         $sql= "SELECT id FROM domain_users WHERE user_id=? AND domain_id=?";
@@ -73,25 +115,17 @@ class User
         $rows = $stmt->fetch(PDO::FETCH_ASSOC);
         return $rows['id'];
     }
+
+    /**
+     * Добавить пользователю домен
+     * @return boolean
+     */
     private static function setDomainUser()
     {
-        if (!empty(self::getDomainUser())){
-            return true;
-        }
-
         $sql = 'INSERT INTO domain_users (user_id, domain_id) VALUES (:user_id, :domain_id)';
         $insert = self::$db->prepare($sql);
         $insert->execute([':user_id' => self::$user_id, ':domain_id' => self::$domain_id]);
-
-        return self::setDomainUser();
-    }
-    private static function getUserId()
-    {
-        $sql= "SELECT user_id FROM users WHERE chat_id=?";
-        $stmt = self::$db->prepare($sql);
-        $stmt->execute([self::$chat_id]);
-        $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $rows['user_id'];
+        return true;
     }
 
 }
