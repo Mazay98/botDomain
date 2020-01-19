@@ -3,8 +3,16 @@ require_once './library/Phois/Whois/Whois.php';
 require_once './Models/DateModel.php';
 require_once './Models/dbModel.php';
 
+/**
+ * Класс домена
+ */
 class Domain
 {
+    /**
+     * Отдать id Домена (создав его если требуется)
+     * @param string $url
+     * @return integer domainId
+    */
     public static function getId($url)
     {
 
