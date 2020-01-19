@@ -30,15 +30,17 @@ class Date
 
         $domain_id = self::getDomainId($url, $db);
 
-        if (!$domain_id) {
-            $reg = $this->getRegistryDate($ans);
-            $exp = $this->getExpirationDate($ans);
-
-            $insert = $db->prepare('INSERT INTO domains (domain_name, date_start, date_end) VALUES (:domain_name, :date_start, :date_end)');
-            $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp]);
-            return $this->addExpAndRegDate($url,$db);
+        if ($domain_id) {
+            return (int)$domain_id['domain_id'];
         }
-        return (int)$domain_id['domain_id'];
+
+        $reg = $this->getRegistryDate($ans);
+        $exp = $this->getExpirationDate($ans);
+
+        $insert = $db->prepare('INSERT INTO domains (domain_name, date_start, date_end) VALUES (:domain_name, :date_start, :date_end)');
+        $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp]);
+
+        return self::addExpAndRegDate($url, $ans, $db);
     }
     public static function getDomainId($domain, $db)
     {
@@ -46,7 +48,7 @@ class Date
         $stmt = $db->prepare($sql);
         $stmt->execute([$domain]);
         $rows = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $rows;
+        return $rows['domain_id'];
     }
     private function formatDate($date)
     {

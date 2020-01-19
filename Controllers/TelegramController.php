@@ -98,6 +98,7 @@ class Bot
              * @param string $domainName Имя домена
             */
             $domain_id = Domain::getId($domainName);
+
             if ($domain_id){
                 /**
                  * Добавляем к пользователю домен

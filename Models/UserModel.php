@@ -74,7 +74,7 @@ class User
             self::userCreate();
         }
 
-        $user_id = (int)self::getUserId();
+        $user_id = (int)self::getUser();
         return $user_id;
     }
 

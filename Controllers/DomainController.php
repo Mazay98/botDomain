@@ -15,14 +15,12 @@ class Domain
     */
     public static function getId($url)
     {
-
         $db = new DB();
         $domain = new Whois($url);
         $whois_answer = $domain->info();
         $date = new Date();
         $domain_id =  $date->addExpAndRegDate($url, $whois_answer, $db->id);
-        return (int)$domain_id;
-
+        return $domain_id;
         ////todo: Добавить авто создание таблиц sql createTables
     }
 }
