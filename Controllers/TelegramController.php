@@ -31,12 +31,12 @@ class Bot
 ;
         if (isset($response['message'])) {
             $this->chatid = $response['message']['chat']['id'];
-            $this->username = $response['message']['chat']['first_name'] ?? $response['message']['chat']['username'];
+            $this->username = $response['message']['chat']['first_name'] ?? $response['message']['chat']['username'] ?? "Аноним";
             $this->messages = $response['message']['text'];
         }
         if (isset($response['callback_query'])) {
             $this->chatid = $response['callback_query']['message']['chat']['id'];
-            $this->username = $response['callback_query']['message']['chat']['first_name'] ??  $response['callback_query']['message']['chat']['username'];
+            $this->username = $response['callback_query']['message']['chat']['first_name'] ??  $response['callback_query']['message']['chat']['username'] ?? "Аноним";
             $this->messages = $response['callback_query']['data'];
         }
 
@@ -74,7 +74,7 @@ class Bot
         if ($this->messages == '/start') {
             $this->responseMessage = "Добро пожаловать!\n";
             $this->responseMessage .= "Меня зовут Доменыч.\n";
-            $this->responseMessage .= "Я ваш персональный помощник!\n";
+            $this->responseMessage .= "$this->username, я Ваш персональный помощник!\n";
             $button_command = array('text' => 'Команды', 'callback_data' => '/help');
             $keyboard = array('inline_keyboard' => array(array($button_command)));
             $this->options['reply_markup']= json_encode($keyboard, TRUE);
@@ -85,7 +85,11 @@ class Bot
          */
         if ($this->messages == '/help') {
             $this->responseMessage = "Список всех команд:\n";
-            $this->responseMessage.= "/addDomain [Доменное имя (google.ru)]";
+            $this->responseMessage.= "/addDomain [Доменное имя (google.ru)]\n";
+
+            $button_command = array('text' => 'Все Мои домены', 'callback_data' => '/allDomains');
+            $keyboard = array('inline_keyboard' => array(array($button_command)));
+            $this->options['reply_markup']= json_encode($keyboard, TRUE);
             return true;
         }
         /**
@@ -110,6 +114,27 @@ class Bot
                 $this->responseMessage = "Домен не привязался";
                 return false;
             }
+        }
+        /**
+         * Команда /allDomains
+        */
+        if (preg_match("~/all[Dd]omains~", trim($this->messages))) {
+
+            $domains = User::getAllDomains($this->userId);
+
+            if ($domains) {
+                $this->responseMessage = "$this->username, вот Ваш список зарегистрированных доменов:\n\n";
+                $this->responseMessage .= "****************************\n\n";
+                foreach ($domains as $domain) {
+                    $this->responseMessage .= "Имя: ".$domain['domain']."\n";
+                    $this->responseMessage .= "Дейстаителен до: ".$domain['end']."\n\n";
+                    $this->responseMessage .= "****************************\n\n";
+                }
+            } else {
+                $this->responseMessage = "$this->username , у Вас нет зарегистрированых доменов";
+                return false;
+            }
+            return true;
         }
         $this->responseMessage='Нет такой команды!';
         return false;

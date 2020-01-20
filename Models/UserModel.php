@@ -21,39 +21,6 @@ class User
     private static $db;
 
     /**
-     * Связать домен и пользователя
-     * @param integer $domainId id Домена
-     * @param integer $userId id Пользователя
-     * @return boolean
-    */
-    public static function setDomainForeUser ($domainId, $userId)
-    {
-        self::$domain_id = $domainId;
-        self::$user_id = $userId;
-
-        self::setChatAndDomainId();
-
-        return true;
-    }
-
-    /**
-     * Связать пользователя и домен
-    */
-    private static function setChatAndDomainId()
-    {
-        $domain_id = self::$domain_id;
-        $user_id = self::$user_id;
-
-        if (empty($user_id) || empty($domain_id)) {
-            return false;
-        }
-        if (empty(self::getDomainUser())){
-            self::setDomainUser();
-        }
-        return true;
-    }
-
-    /**
      * Возвращает id пользователя
      * @param string $name Логин клиента
      * @param string $chatId Id чата клиента
@@ -76,6 +43,66 @@ class User
 
         $user_id = (int)self::getUser();
         return $user_id;
+    }
+    /**
+     * Связать домен и пользователя
+     * @param integer $domainId id Домена
+     * @param integer $userId id Пользователя
+     * @return boolean
+    */
+    public static function setDomainForeUser($domainId, $userId)
+    {
+        self::$domain_id = $domainId;
+        self::$user_id = $userId;
+
+        self::setChatAndDomainId();
+
+        return true;
+    }
+
+    /**
+     * Вывести список всех доменов пользователя
+     * @param integer $userId id пользователя
+     * @return array
+    */
+    public static function getAllDomains($userId)
+    {
+        $db = new DB();
+        $db = $db->id;
+
+        $sql= "
+            SELECT domain_name 'domain', date_end 'end'
+            FROM (
+                users JOIN domain_users
+                USING(user_id))
+            JOIN domains 
+            USING (domain_id)
+            WHERE user_id = ?
+        ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$userId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$rows){
+            return false;
+        }
+        return $rows;
+    }
+    /**
+     * Связать пользователя и домен
+    */
+    private static function setChatAndDomainId()
+    {
+        $domain_id = self::$domain_id;
+        $user_id = self::$user_id;
+
+        if (empty($user_id) || empty($domain_id)) {
+            return false;
+        }
+        if (empty(self::getDomainUser())){
+            self::setDomainUser();
+        }
+        return true;
     }
 
     /**
