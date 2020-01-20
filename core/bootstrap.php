@@ -10,10 +10,6 @@
 //    CheckerController::create($db->id);
 
 
-//TODO: Добавить работу с ботом telegram -> php
-    //TODO: Добавить команды : /start, /addDomain [domain name]
-//TODO: Добавить team_id
-//TODO: Присвоить team_id из telegram
-//TODO: Добавить id пользователя добавившего доменный адрес в team_id
+//TODO: Добавить авто создание таблиц sql createTables
 //TODO: Добавить проверку даты (день, 2 дня, 7 дней)
 //TODO: Настроить вывод уведомлений в telegram

@@ -21,6 +21,5 @@ class Domain
         $date = new Date();
         $domain_id =  $date->addExpAndRegDate($url, $whois_answer, $db->id);
         return $domain_id;
-        ////todo: Добавить авто создание таблиц sql createTables
     }
 }

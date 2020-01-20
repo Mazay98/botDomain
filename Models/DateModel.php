@@ -25,7 +25,7 @@ class Date
     {
         // Проверка на длину строки ответа
         if (strlen($ans)<=50) {
-            return 'Ошибка в домене';
+            return false;
         }
 
         $domain_id = self::getDomainId($url, $db);
