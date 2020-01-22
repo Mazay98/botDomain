@@ -1,6 +1,14 @@
 <?php
+
+use http\Url;
+
 class Date
 {
+    /**
+     * Получить дуту регистрации домена
+     * @param string $date дата
+     * @return string
+     */
     public function getRegistryDate($date)
     {
         preg_match('/Creation\sDate:\s(.*)\\r/', $date, $matches);
@@ -11,6 +19,11 @@ class Date
         return $matches[1];
     }
 
+    /**
+     * Получить дуту Окончания регистрации домена
+     * @param string $date дата
+     * @return string
+     */
     public function getExpirationDate($date)
     {
         preg_match('/Registry\sExpiry\sDate:\s(.*)\\r/', $date, $matches);
@@ -21,6 +34,12 @@ class Date
         return $matches[1];
     }
 
+    /**
+     * Добавить дату для домена
+     * @param string $url uri домена без https
+     * @param string $ans Ответ от сервера whois
+     * @return integer domain_id
+    */
     public function addExpAndRegDate($url, $ans, $db)
     {
         // Проверка на длину строки ответа
@@ -42,6 +61,12 @@ class Date
 
         return self::addExpAndRegDate($url, $ans, $db);
     }
+
+    /**
+     * Найти домен в Бд
+     * @param string $domain uri домена без https
+     * @return integer
+     */
     public static function getDomainId($domain, $db)
     {
         $sql= "SELECT domain_id FROM domains WHERE domain_name=?";
@@ -50,6 +75,12 @@ class Date
         $rows = $stmt->fetch(PDO::FETCH_ASSOC);
         return $rows['domain_id'];
     }
+
+    /**
+     * Возвращает дату регистрации.
+     * @param string $date дата
+     * @return string
+     */
     private function formatDate($date)
     {
         preg_match("/(\d{4}-\d{2}-\d{2})/", $date, $matches);
@@ -57,4 +88,3 @@ class Date
     }
 
 }
-//todo: Нужно оптимизировать

@@ -1,5 +1,5 @@
 <?php
-class Checker extends  Model
+class Checker
 {
     public function check ($db)
     {

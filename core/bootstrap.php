@@ -1,7 +1,5 @@
 <?php
     require './settings.php';
-    require_once 'Controller.php';
-    require_once 'Model.php';
     require_once  'routes.php';
 
     //Инициализация маршрутов
