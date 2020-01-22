@@ -2,6 +2,10 @@
 require_once './Models/dbModel.php';
 class Checker
 {
+    /**
+     * Находит домены, у которых срок действия подходит к концу.
+     * @return array
+    */
     public function check ()
     {
         $db = new DB();
@@ -22,10 +26,6 @@ class Checker
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($rows) {
-            return $rows;
-        } else {
-            return false;
-        }
+        return $rows ? $rows : false;
     }
 }

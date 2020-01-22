@@ -50,14 +50,14 @@ class Bot
         if (!$this->userId) {
             $this->options['text'] = 'Ошибка создания пользователя';
             $this->sendRequest();
-            die();
+            return false;
         }
 
         $this->setAnswer();
         $this->options['chat_id'] = $this->chatid;
         $this->options['text'] = $this->responseMessage;
         $this->sendRequest();
-        die();
+        return true;
     }
     /**
      * Установить ответ боту

@@ -24,6 +24,8 @@ class Route
         } else {
             Route::ErrorPage404();
         }
+
+        die();
     }
 
     /**
