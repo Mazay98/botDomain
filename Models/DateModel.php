@@ -53,13 +53,14 @@ class Date
             return (int)$domain_id['domain_id'];
         }
 
+        $ssl_date = $this->setDomainDateSSL($url) ? $this->setDomainDateSSL($url) : '';
         $reg = $this->getRegistryDate($ans);
         $exp = $this->getExpirationDate($ans);
 
-        $insert = $db->prepare('INSERT INTO domains (domain_name, date_start, date_end) VALUES (:domain_name, :date_start, :date_end)');
-        $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp]);
+        $insert = $db->prepare('INSERT INTO domains (domain_name, date_start, date_end, date_end_ssl) VALUES (:domain_name, :date_start, :date_end, :date_end_ssl)');
+        $insert->execute([':domain_name' => $url, ':date_start' => $reg, ':date_end' => $exp, ':date_end_ssl'  => $ssl_date]);
 
-        return self::addExpAndRegDate($url, $ans, $db);
+        return true ? $insert->rowCount() : false;
     }
 
     /**
@@ -87,4 +88,18 @@ class Date
         return $matches[1];
     }
 
+    /**
+     * Возвращает до какого числа зарегистрирован ssl сертификат
+     * @param string $url url сертификата
+     * @return string
+     */
+    private function setDomainDateSSL($url)
+    {
+        $getDomainSSL = shell_exec("echo | openssl s_client -servername $url -connect $url:443 2>/dev/null | openssl x509 -noout -dates");
+        preg_match('~notAfter=(\w+)\s(\d+)\s.+\s(\d+)~', $getDomainSSL, $matches);
+        $date =  $matches[2].$matches[1].$matches[3];
+        $date =  date("Y.m.d", strtotime($date));
+        $date = str_replace('.','-',$date);
+        return $date;
+    }
 }

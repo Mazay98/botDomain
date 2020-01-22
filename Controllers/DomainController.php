@@ -19,7 +19,10 @@ class Domain
         $domain = new Whois($url);
         $whois_answer = $domain->info();
         $date = new Date();
-        $domain_id =  $date->addExpAndRegDate($url, $whois_answer, $db->id);
-        return $domain_id;
+        if ($date->addExpAndRegDate($url, $whois_answer, $db->id)) {
+            $domain_id = (int)Date::getDomainId($url,$db->id);
+            return $domain_id;
+        }
+       return false;
     }
 }
