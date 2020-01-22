@@ -88,6 +88,42 @@ class User
         }
         return $rows;
     }
+
+    /**
+     * Удалить домен у пользователя
+     * @param  integer $userId id Пользователя
+     * @param  string $domainName Доменное имя
+     * @return boolean
+    */
+    public static function destroyDomianForeUser($userId, $domainName)
+    {
+        if (!$userId || !$domainName){
+            return  false;
+        }
+        $db = new DB();
+        $db = $db->id;
+
+        $sql= "
+            DELETE du 
+            FROM ( 
+                domain_users du 
+                JOIN users 
+                USING(user_id) 
+            )
+            JOIN domains 
+            USING (domain_id) 
+            WHERE users.user_id = ? AND domains.domain_name = ?
+        ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$userId, $domainName]);
+
+        if (!$stmt->rowCount()){
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Связать пользователя и домен
     */

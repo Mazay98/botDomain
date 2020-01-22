@@ -85,7 +85,8 @@ class Bot
          */
         if ($this->messages == '/help') {
             $this->responseMessage = "Список всех команд:\n";
-            $this->responseMessage.= "/addDomain [Доменное имя (google.ru)]\n";
+            $this->responseMessage.= "/addDomain (google.ru) - Добавить домен\n";
+            $this->responseMessage.= "/destroyDomain (google.ru) - Удалить домен \n";
 
             $button_command = array('text' => 'Все Мои домены', 'callback_data' => '/allDomains');
             $keyboard = array('inline_keyboard' => array(array($button_command)));
@@ -125,18 +126,40 @@ class Bot
             if ($domains) {
                 $this->responseMessage = "$this->username, вот Ваш список зарегистрированных доменов:\n\n";
                 $this->responseMessage .= "****************************\n\n";
+                $button_command = [];
                 foreach ($domains as $domain) {
                     $this->responseMessage .= "Имя: ".$domain['domain']."\n";
                     $this->responseMessage .= "Дейстаителен до: ".$domain['end']."\n\n";
+                    $button_command[] = [['text' => 'Удалить домен '.$domain['domain'], 'callback_data' => '/destroyDomain '.$domain['domain']]];
                     $this->responseMessage .= "****************************\n\n";
                 }
+                $keyboard = array('inline_keyboard' => $button_command);
+                $this->options['reply_markup']= json_encode($keyboard);
+//                file_put_contents('test.txt', json_encode($keyboard));
             } else {
                 $this->responseMessage = "$this->username , у Вас нет зарегистрированых доменов";
                 return false;
             }
             return true;
         }
+        /**
+         * Команда /destroyDomain
+        */
+        if (preg_match("~/destroy[Dd]omain[\s]+(.+\..{2,10})$~", trim($this->messages),$matches)) {
+            $domainName = $matches[1];
+            $domainRemoved = User::destroyDomianForeUser($this->userId, $domainName);
+            if ($domainRemoved){
+                $this->responseMessage = "$this->username , домен $domainName успешно отвязан";
+            } else {
+                $this->responseMessage = "$this->username , нам не удалось отвязать домен $domainName";
+                return false;
+            }
+            return true;
+        }
         $this->responseMessage='Нет такой команды!';
+        $button_command = array('text' => 'Команды', 'callback_data' => '/help');
+        $keyboard = array('inline_keyboard' => array(array($button_command)));
+        $this->options['reply_markup']= json_encode($keyboard, TRUE);
         return false;
     }
     /**
