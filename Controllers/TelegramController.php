@@ -166,8 +166,9 @@ class Bot
      * Отправляем ответ боту
      * @return array
      * @param string $method Метод для отправки боту, смотри Api телеграм
+     * @param array $option Опции для отправки
     */
-    private function sendRequest($method = 'sendMessage')
+    protected function sendRequest($option=[], $method = 'sendMessage')
     {
         $uri = 'https://api.telegram.org/bot' . TOKEN_BOT . '/';
         $myCurl = curl_init();
@@ -180,6 +181,8 @@ class Bot
 
         if (!empty($this->options)) {
             curl_setopt($myCurl, CURLOPT_URL, $uri . $method . "?" . http_build_query($this->options));
+        } else if ($option){
+            curl_setopt($myCurl, CURLOPT_URL, $uri . $method . "?" . http_build_query($option));
         } else {
             curl_setopt($myCurl, CURLOPT_URL, $uri . $method);
         }

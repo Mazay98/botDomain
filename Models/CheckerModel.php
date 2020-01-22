@@ -1,11 +1,25 @@
 <?php
+require_once './Models/dbModel.php';
 class Checker
 {
-    public function check ($db)
+    public function check ()
     {
-        $sql= "SELECT url,date_end FROM dates WHERE date_end = CURDATE() OR date_end = CURDATE() + INTERVAL 2 DAY OR date_end = CURDATE() + INTERVAL 7 DAY";
+        $db = new DB();
+        $db = $db->id;
+
+        $sql= "
+            SELECT user_name, chat_id, domain_name, date_end 
+            FROM domain_users JOIN users USING (user_id)
+            JOIN domains USING (domain_id)
+            WHERE (
+                domains.date_end = CURDATE() OR 
+                domains.date_end = CURDATE() + INTERVAL 2 DAY OR 
+                domains.date_end = CURDATE() + INTERVAL 7 DAY  OR 
+                domains.date_end = CURDATE() + INTERVAL 30 DAY
+            )
+        ";
         $stmt = $db->prepare($sql);
-        $stmt->execute([LINK_URL]);
+        $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if ($rows) {
@@ -14,5 +28,4 @@ class Checker
             return false;
         }
     }
-
 }

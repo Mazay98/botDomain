@@ -20,6 +20,7 @@ class Route
             $bot = new Bot();
         } elseif ($routes[1] === 'check') {
             include "./Controllers/CheckerController.php";
+            $checker = new CheckDomain();
         } else {
             Route::ErrorPage404();
         }
