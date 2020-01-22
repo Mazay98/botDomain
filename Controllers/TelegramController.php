@@ -129,7 +129,7 @@ class Bot
                 $button_command = [];
                 foreach ($domains as $domain) {
                     $this->responseMessage .= "Имя: ".$domain['domain']."\n";
-                    $this->responseMessage .= "Дейстаителен до: ".$domain['end']."\n\n";
+                    $this->responseMessage .= "Действителен до: ".$domain['end']."\n\n";
                     $button_command[] = [['text' => 'Удалить домен '.$domain['domain'], 'callback_data' => '/destroyDomain '.$domain['domain']]];
                     $this->responseMessage .= "****************************\n\n";
                 }
