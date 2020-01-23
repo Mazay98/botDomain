@@ -71,7 +71,7 @@ class User
         $db = $db->id;
 
         $sql= "
-            SELECT domain_name 'domain', date_end 'end'
+            SELECT domain_name 'domain', date_end 'end', date_end_ssl 'ssl'
             FROM (
                 users JOIN domain_users
                 USING(user_id))

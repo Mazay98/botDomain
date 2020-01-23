@@ -129,9 +129,10 @@ class Bot
                 $button_command = [];
                 foreach ($domains as $domain) {
                     $this->responseMessage .= "Имя: ".$domain['domain']."\n";
-                    $this->responseMessage .= "Действителен до: ".$domain['end']."\n\n";
-                    $button_command[] = [['text' => 'Удалить домен '.$domain['domain'], 'callback_data' => '/destroyDomain '.$domain['domain']]];
+                    $this->responseMessage .= "Действителен до: ".date('d-m-Y', strtotime($domain['end']))."\n";
+                    $this->responseMessage .= "SSL действителен до: ".date('d-m-Y', strtotime($domain['ssl']))."\n\n";
                     $this->responseMessage .= "****************************\n\n";
+                    $button_command[] = [['text' => 'Удалить домен '.$domain['domain'], 'callback_data' => '/destroyDomain '.$domain['domain']]];
                 }
                 $keyboard = array('inline_keyboard' => $button_command);
                 $this->options['reply_markup']= json_encode($keyboard);
