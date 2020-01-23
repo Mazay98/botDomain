@@ -96,7 +96,7 @@ class Date
     private function setDomainDateSSL($url)
     {
         $getDomainSSL = shell_exec("echo | openssl s_client -servername $url -connect $url:443 2>/dev/null | openssl x509 -noout -dates");
-        preg_match('~notAfter=(\w+)\s(\d+)\s.+\s(\d+)~', $getDomainSSL, $matches);
+        preg_match('~notAfter=(\w+)\s+(\d+)\s.+\s(\d+)~', $getDomainSSL, $matches);
         $date =  $matches[2].$matches[1].$matches[3];
         $date =  date("Y.m.d", strtotime($date));
         $date = str_replace('.','-',$date);
