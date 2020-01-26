@@ -28,7 +28,7 @@ class Bot
          * @array Массив параметров, который пришел от бота
         */
         $response = json_decode(file_get_contents('php://input'), JSON_OBJECT_AS_ARRAY);
-;
+		
         if (isset($response['message'])) {
             $this->chatid = $response['message']['chat']['id'];
             $this->username = $response['message']['chat']['first_name'] ?? $response['message']['chat']['username'] ?? "Аноним";
