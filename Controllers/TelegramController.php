@@ -173,12 +173,14 @@ class Bot
     {
         $uri = 'https://api.telegram.org/bot' . TOKEN_BOT . '/';
         $myCurl = curl_init();
-
-        /**
-         * Необходимо прокси так как РКН блокирует Telegram
+		
+		/**
+         * Если включено в настройках PROXY_TOR
         */
-        curl_setopt($myCurl, CURLOPT_PROXYTYPE, 7);
-        curl_setopt($myCurl, CURLOPT_PROXY, "127.0.0.1:9050");
+		if(PROXY_TOR){
+			curl_setopt($myCurl, CURLOPT_PROXYTYPE, 7);
+			curl_setopt($myCurl, CURLOPT_PROXY, "127.0.0.1:9050");
+		}
 
         if (!empty($this->options)) {
             curl_setopt($myCurl, CURLOPT_URL, $uri . $method . "?" . http_build_query($this->options));

@@ -21,6 +21,8 @@ https://api.telegram.org/bot~TOKEN~/setWebhook?url="url/bot"
 
 Заполняем TOKEN
 
+PROXY - true(включен), false(выключен)
+
 ### Восстанавливаем дамп
 
 Для корректной работы приложения нужно восстановить дамп из файла start.sql
